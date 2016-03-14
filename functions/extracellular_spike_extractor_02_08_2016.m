@@ -41,8 +41,8 @@ subplot(3,1,2:3);plot(data); title('No spikes??'); pause(1);
 return   
 end
 
-global Param;
-sliderGUI(data(start_point:stop_point), unfiltered_data(start_point:stop_point), piezo(start_point:stop_point), locs, len, thresholds, []);
+global peak_threshold;
+threshold_sliderGUI(data(start_point:stop_point), unfiltered_data(start_point:stop_point), piezo(start_point:stop_point), locs, len, thresholds, []);
 
 if ~isempty(template)
 spikeTemplate = template;
@@ -83,7 +83,7 @@ spikeTemplateWidth = length(spikeTemplate);
 
 %% get all the spike locs using the correct std value
 locks = [];loccs = [];
-[locks, pks] = peakfinder(double(data),mean(data)+thresholds(Param)*std(data));%% slightly different algorithm;  [peakLoc] = peakfinder(x0,sel,thresh) returns the indicies of local maxima that are at least sel above surrounding data and larger (smaller) than thresh if you are finding maxima (minima).
+[locks, pks] = peakfinder(double(data),mean(data)+thresholds(peak_threshold)*std(data));%% slightly different algorithm;  [peakLoc] = peakfinder(x0,sel,thresh) returns the indicies of local maxima that are at least sel above surrounding data and larger (smaller) than thresh if you are finding maxima (minima).
  loccs = locks((locks> spikeTemplateWidth)); %%to prevent strange happenings, make sure that spikes do not occur right at the edges
  if any(diff(loccs)) < spikeTemplateWidth
    [inds,vals] =  find(diff(loccs) < spikeTemplateWidth); loccs(vals+1) = [];
